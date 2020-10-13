@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div id="canvas"></div>
+    <!-- <div id="canvas"></div> -->
+    <canvas id="canvas"></canvas>
     <script>
-      canvas.onclick = (e) => {
+      /* 通过js进行dom操作，性能慢 
+      canvas.onmousemove = (e) => {
         console.log(e.clientX, e.clientY);
         let div = document.createElement("div");
         div.style.position = "absolute";
@@ -23,6 +25,33 @@
         div.style.marginTop = "-3px";
 
         canvas.appendChild(div);
+      }; */
+
+      var canvas = document.getElementById("canvas");
+      canvas.width = document.documentElement.clientWidth;
+      canvas.height = document.documentElement.clientHeight;
+      let ctx = canvas.getContext("2d");
+      ctx.fillStyle = "rgb(0,0,0)";
+
+      let painting = false;
+
+      canvas.onmousedown = () => {
+        painting = true;
+      };
+
+      canvas.onmouseup = () => {
+        painting = false;
+      };
+
+      canvas.onmousemove = (e) => {
+        if (painting === true) {
+          console.log(e.clientX, e.clientY);
+          // ctx.fillRect(e.clientX - 5, e.clientY - 5, 10, 10);
+          ctx.beginPath();
+          ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.fill();
+        }
       };
     </script>
   </body>
