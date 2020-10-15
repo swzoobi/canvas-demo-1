@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <!-- <div id="canvas"></div> -->
     <canvas id="canvas"></canvas>
     <script>
       /* 通过js进行dom操作，性能慢 
@@ -32,27 +31,56 @@
       canvas.height = document.documentElement.clientHeight;
       let ctx = canvas.getContext("2d");
       ctx.fillStyle = "rgb(0,0,0)";
+      ctx.strokeStyle = "none";
+      ctx.lineWidth = 8;
+      //线条连接处为圆角
+      ctx.lineCap = "round";
 
+      //存储上一个点的坐标
+      let last;
+
+      //画线函数
+      function drawLine(x1, y1, x2, y2) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+
+      //是否继续绘画标志
       let painting = false;
 
-      canvas.onmousedown = () => {
-        painting = true;
-      };
+      //通常检测是否有触摸事件，来判断当前设备是否为移动端
+      let isTouchDevice = "ontouchstart" in document.documentElement;
+      console.log(isTouchDevice);
 
-      canvas.onmouseup = () => {
-        painting = false;
-      };
+      if (isTouchDevice) {
+        canvas.ontouchstart = (e) => {
+          let touch = e.touches[0];
+          last = [touch.clientX, touch.clientY];
+        };
+        canvas.ontouchmove = (e) => {
+          let touch = e.touches[0];
+          drawLine(last[0], last[1], touch.clientX, touch.clientY);
+          last = [touch.clientX, touch.clientY];
+        };
+      } else {
+        canvas.onmousedown = (e) => {
+          painting = true;
+          last = [e.clientX, e.clientY];
+        };
 
-      canvas.onmousemove = (e) => {
-        if (painting === true) {
-          console.log(e.clientX, e.clientY);
-          // ctx.fillRect(e.clientX - 5, e.clientY - 5, 10, 10);
-          ctx.beginPath();
-          ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);
-          ctx.stroke();
-          ctx.fill();
-        }
-      };
+        canvas.onmouseup = () => {
+          painting = false;
+        };
+
+        canvas.onmousemove = (e) => {
+          if (painting === true) {
+            drawLine(last[0], last[1], e.clientX, e.clientY);
+            last = [e.clientX, e.clientY];
+          }
+        };
+      }
     </script>
   </body>
 </html>
