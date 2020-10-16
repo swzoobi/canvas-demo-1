@@ -7,3 +7,9 @@
 #canvas {
   display: block;
 }
+
+.form-wrap {
+  display: inline-block;
+  height: 30px;
+  margin-left: 30px;
+}

@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
+    <div class="form-wrap">
+      <label for="color">选择画笔颜色</label>
+      <input type="color" name="color" id="color" />
+    </div>
+    <div class="form-wrap">
+      <label for="lineWidth">选择画笔粗细</label>
+      <input type="number" name="lineWidth" id="lineWidth" value="8" min="1" />
+    </div>
     <canvas id="canvas"></canvas>
     <script>
       /* 通过js进行dom操作，性能慢 
@@ -28,13 +36,20 @@
 
       var canvas = document.getElementById("canvas");
       canvas.width = document.documentElement.clientWidth;
-      canvas.height = document.documentElement.clientHeight;
+      canvas.height = document.documentElement.clientHeight - 32;
       let ctx = canvas.getContext("2d");
-      ctx.fillStyle = "rgb(0,0,0)";
-      ctx.strokeStyle = "none";
-      ctx.lineWidth = 8;
+      ctx.strokeStyle = color.value;
+      ctx.lineWidth = lineWidth.value;
       //线条连接处为圆角
       ctx.lineCap = "round";
+
+      color.onchange = (e) => {
+        ctx.strokeStyle = e.target.value;
+      };
+
+      lineWidth.onchange = (e) => {
+        ctx.lineWidth = e.target.value;
+      };
 
       //存储上一个点的坐标
       let last;
@@ -52,7 +67,6 @@
 
       //通常检测是否有触摸事件，来判断当前设备是否为移动端
       let isTouchDevice = "ontouchstart" in document.documentElement;
-      console.log(isTouchDevice);
 
       if (isTouchDevice) {
         canvas.ontouchstart = (e) => {
