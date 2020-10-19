@@ -15,6 +15,9 @@
       <label for="lineWidth">选择画笔粗细</label>
       <input type="number" name="lineWidth" id="lineWidth" value="8" min="1" />
     </div>
+    <div class="form-wrap">
+      <button id='clearBtn'>重画</button>
+    </div>
     <canvas id="canvas"></canvas>
     <script>
       /* 通过js进行dom操作，性能慢 
@@ -42,7 +45,7 @@
       ctx.lineWidth = lineWidth.value;
       //线条连接处为圆角
       ctx.lineCap = "round";
-
+      
       color.onchange = (e) => {
         ctx.strokeStyle = e.target.value;
       };
@@ -50,6 +53,10 @@
       lineWidth.onchange = (e) => {
         ctx.lineWidth = e.target.value;
       };
+
+      clearBtn.onclick = (e) => {
+        ctx.clearRect(0,0,canvas.width,canvas.height); 
+      }
 
       //存储上一个点的坐标
       let last;
